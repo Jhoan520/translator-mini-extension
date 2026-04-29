@@ -1,46 +1,43 @@
-
-const p_extStatus = document.getElementById("ext-status");
+const EXTENSION_STATUS = "extension_is_enable";
 const btn_disable_ext = document.getElementById("disable-extension");
 btn_disable_ext.classList.add("btn-disable-ext");
-document.addEventListener("DOMContentLoaded", event => handleExtensionStatus());
-document.addEventListener("click", (event) => disableExtension(event))
-const extStatus = "extension_enable";
 
-async function disableExtension(event) {
+document.addEventListener("DOMContentLoaded", event => handleExtensionStatus());
+btn_disable_ext.addEventListener("click", (event) => disableExtension(event))
+
+async function disableExtension(event) {    
+    const extensionStatus = await chrome.storage.session.get([EXTENSION_STATUS]);
+    const extensionIsEnable = extensionStatus[EXTENSION_STATUS] || false;
     
-    const extension = await chrome.storage.session.get([extStatus]);
-    const extensionStatus = extension[extStatus] || false;
-    
-    if (extensionStatus === true) {
-        await chrome.storage.session.set({[extStatus]: false});
+    if (extensionIsEnable) {
+        await chrome.storage.session.set({[EXTENSION_STATUS]: false});
         await changeIcon(false);
-        const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
-        const data = await chrome.storage.session.get([extStatus]);
-        p_extStatus.textContent = "Estado de la extension " + data[extStatus] + " ID " + tab.id;
+        await closeExtension();
+        window.close();
     }
+}
+
+async function closeExtension() {
+    const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
+    chrome.tabs.sendMessage(tab.id, {message: "CLOSE_EXTENSION"});
 }
 
 async function handleExtensionStatus(event) {
 
-    const extension = await chrome.storage.session.get([extStatus]);
-    const extensionStatus = extension[extStatus] || null;
+    const extension = await chrome.storage.session.get([EXTENSION_STATUS]);
+    const extensionStatus = extension[EXTENSION_STATUS] || null;
 
     if (extensionStatus === null) {
-        await chrome.storage.session.set({[extStatus]: true});
+        await chrome.storage.session.set({[EXTENSION_STATUS]: true});
         await changeIcon(true);
 
     } else if (extensionStatus === false) {
-        await chrome.storage.session.set({[extStatus]: true});
+        await chrome.storage.session.set({[EXTENSION_STATUS]: true});
     }
-
-    const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
-    const data = await chrome.storage.session.get([extStatus]);
-    p_extStatus.textContent = "Estado de la extension " + data[extStatus] + " ID " + tab.id;
 }
 
-
 async function changeIcon(iconIsEnable) {
-    const data = await chrome.storage.session.get([extStatus]);
+    const data = await chrome.storage.session.get([EXTENSION_STATUS]);
 
     if (iconIsEnable) {
         await chrome.action.setIcon({
@@ -54,10 +51,4 @@ async function changeIcon(iconIsEnable) {
             tabId: data.id
         });
     }
-
-
-
-
-
-
 }

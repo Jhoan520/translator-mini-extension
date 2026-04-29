@@ -4,7 +4,7 @@
     --extension-font-color: black;
     --extension-shadow-color: rgb(234, 234, 234);
     --div-original-bg-color: rgba(173, 216, 230, 0.7);
-    --div-traduction-bg-color: rgba(189, 252, 201, 0.7);
+    --div-translation-bg-color: rgba(189, 252, 201, 0.7);
     --btn-copy-bg-color: rgb(36, 224, 71);
     --btn-copy-bg-hover-color: rgb(0, 255, 47);
 }
@@ -16,13 +16,13 @@
         --extension-font-color: white ;
         --extension-shadow-color: rgb(40, 40, 40);
         --div-original-bg-color: rgba(46, 184, 229, 0.7);
-        --div-traduction-bg-color: rgba(51, 221, 82, 0.7);
+        --div-translation-bg-color: rgba(51, 221, 82, 0.7);
         --btn-copy-bg-color: rgba(249, 70, 255, 0.842);
         --btn-copy-bg-hover-color: rgb(208, 0, 255);
     }
 }
 
-.contenedor-traductor {
+.container-translator {
     position: fixed;
     z-index: 999999;
     top: 1%;
@@ -41,11 +41,11 @@
 .div-original {
     background: var(--div-original-bg-color);
 }
-.div-traduccion {
-    background: var(--div-traduction-bg-color);
+.div-translation {
+    background: var(--div-translation-bg-color);
 }
 .div-original,
-.div-traduccion {
+.div-translation {
     padding: 1.5% 1% 1.5% 1.5%;
     border-radius: 0.3rem;    
     width: 100%;
@@ -56,7 +56,7 @@
 
 }
 .div-original p,
-.div-traduccion p {
+.div-translation p {
     font-size: medium;
     color: var(--extension-font-color);
     margin: 0%;

@@ -22,7 +22,7 @@
     },
     "web_accessible_resources": [
         {
-        "resources": [ "css/translator-ext.css"],
+        "resources": [ "css/translator-ext.css", "images/copy-icon.svg"],
         "matches": [ "<all_urls>" ]
         }
     ]

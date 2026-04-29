@@ -8,22 +8,42 @@ const p_text_traduction = document.createElement("p");
 const btn_copy = document.createElement("button");
 const img_copy = document.createElement("img");
 
+const EXTENSION_STATUS = "extension_is_enable";
+
 initApp();
 async function initApp() {
     await loadDOMElements();
     window.addEventListener("mouseup", (event) => runTranslation(event));
     btn_copy.addEventListener("click", (event) => copyToClipboard(event));
+    chrome.runtime.onMessage.addListener((event) => closeExtension(event));
+}
+
+function closeExtension(event) {
+ if (event.message === "CLOSE_EXTENSION") {
+        div_extension.style.display = "none";
+    }
 }
 
 async function copyToClipboard(event) {
     const textCopy = p_text_traduction.textContent;
-    if(textCopy.length === 0) return;    
+    if(textCopy.length === 0) return;
+
     const clipboardItemData = {"text/plain": textCopy};
     const clipboardItem = new ClipboardItem(clipboardItemData);
-    await navigator.clipboard.write([clipboardItem]);
-}    
 
-function runTranslation(event) {
+    await navigator.clipboard.write([clipboardItem]);
+}
+
+async function extensionIsEnable(params) {
+    const messageObject = {status: "EXTENSION_STATUS"};
+    const resp = await chrome.runtime.sendMessage(messageObject);
+    return resp;
+}
+
+async function runTranslation(event) {
+
+    if (!(await extensionIsEnable())) return;
+
     const textSelected = document.getSelection().toString().trim();
 
     if (textSelected.length > 0){
@@ -33,9 +53,15 @@ function runTranslation(event) {
             showTraduction(textSelected, response);
         });
 
-    } else if (!event.target.closest(".text, .text-original, .text-traduction, .contenedor-traductor")) {
+    } else if (!event.target.closest(".div-options .div-original, .div-translation, .container-translator")) {
         div_extension.style.display = "none";
     }
+};
+
+function showTraduction(textOriginal, textTraduction) {
+    p_text_original.innerText = textOriginal;
+    p_text_traduction.innerText = textTraduction;
+    div_extension.style.display = "block";
 };
 
 async function loadDOMElements(){
@@ -44,29 +70,21 @@ async function loadDOMElements(){
     const resp = await fetch(urlCSS);
     const css = await resp.text();
 
-
     style_ext.innerText = css;
     document.head.appendChild(style_ext);
-    div_extension.classList.add("contenedor-traductor");
+    div_extension.classList.add("container-translator");
     div_original.classList.add("div-original");
-    p_text_original.classList.add("text");
-    p_text_traduction.classList.add("text-traduction");
+    div_traduction.classList.add("div-translation");
     div_options.classList.add("div-options");
-    div_traduction.classList.add("div-traduccion");
+    btn_copy.classList.add("btn-copy");
     img_copy.src = copyIconURL;
     img_copy.alt = "Copy icon";
-    btn_copy.classList.add("btn-copy");
-    btn_copy.append(img_copy)
-    div_options.append(btn_copy);
     div_original.appendChild(p_text_original);
     div_traduction.appendChild(p_text_traduction);
+    btn_copy.append(img_copy)
+    div_options.append(btn_copy);
     div_extension.append(div_original,div_options, div_traduction);
     div_extension.style.display = "none";
-    document.body.appendChild(div_extension);
-};
 
-function showTraduction(textOriginal, textTraduction) {
-    p_text_original.innerText = textOriginal;
-    p_text_traduction.innerText = textTraduction;
-    div_extension.style.display = "block";
+    document.body.appendChild(div_extension);
 };
