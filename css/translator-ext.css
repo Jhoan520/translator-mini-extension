@@ -1,0 +1,80 @@
+/* Default Light color theme */
+:root {
+    --container-extension-bg-color: white;
+    --extension-font-color: black;
+    --extension-shadow-color: rgb(234, 234, 234);
+    --div-original-bg-color: rgba(173, 216, 230, 0.7);
+    --div-traduction-bg-color: rgba(189, 252, 201, 0.7);
+    --btn-copy-bg-color: rgb(36, 224, 71);
+    --btn-copy-bg-hover-color: rgb(0, 255, 47);
+}
+
+/* Default Dark color theme */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --container-extension-bg-color: #1E1E1E;
+        --extension-font-color: white ;
+        --extension-shadow-color: rgb(40, 40, 40);
+        --div-original-bg-color: rgba(46, 184, 229, 0.7);
+        --div-traduction-bg-color: rgba(51, 221, 82, 0.7);
+        --btn-copy-bg-color: rgba(249, 70, 255, 0.842);
+        --btn-copy-bg-hover-color: rgb(208, 0, 255);
+    }
+}
+
+.contenedor-traductor {
+    position: fixed;
+    z-index: 999999;
+    top: 1%;
+    left: 70%;
+    width: 28%;
+    min-height: 5vh;
+    height: auto;
+    max-height: 60vh;
+    background: var(--container-extension-bg-color);
+    border-radius: 0.3rem;
+    padding:0.5rem 0.5rem;
+    overflow: hidden;
+    box-shadow: 0rem 0rem 1.8rem 0.8rem var(--extension-shadow-color);
+}
+
+.div-original {
+    background: var(--div-original-bg-color);
+}
+.div-traduccion {
+    background: var(--div-traduction-bg-color);
+}
+.div-original,
+.div-traduccion {
+    padding: 1.5% 1% 1.5% 1.5%;
+    border-radius: 0.3rem;    
+    width: 100%;
+    height: auto;
+    max-height: 30vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+}
+.div-original p,
+.div-traduccion p {
+    font-size: medium;
+    color: var(--extension-font-color);
+    margin: 0%;
+}
+
+.btn-copy {
+    width: fit-content;;
+    height: fit-content;
+    margin: 0% 0% 0% auto;
+    background: var(--btn-copy-bg-color);
+    border: 0.01rem solid gray;
+    border-radius: 0.2rem;
+}
+.btn-copy:hover {
+    background: var(--btn-copy-bg-hover-color);
+}
+
+.div-options {
+    display: flex;
+    margin: 1%;
+}
