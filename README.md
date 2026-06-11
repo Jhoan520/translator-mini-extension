@@ -20,6 +20,22 @@ Trademarks: "Google", "Chromium", and "Google Translate" are trademarks of Googl
 * **HTML5 & CSS3:** For the user interface and styling.
 * **Chrome Extension API (Manifest v3):** The latest standard for secure and performant browser extensions.
 
+## Instalation
+1. Download de zip from Releases section.
+2. Unzip the file and save it wherever you deem appropiate on your computer storage.
+3. In your Broweser open the **Extension section** and enable **developer mode** option.
+4. After doing that select the **load uncompressed** option and select the unzipped folder you saved.
+5. Finally make sure it's enabled.
+- To uninstall the extension make click on the **Remove** button.
+- If you just want disable the extenesion, just click on the **Switch** button. 
+
+## How use
+1. You can set the **extension icon** in the top tab of your Browser.
+2. Make click on the **extension icon** to enable.
+3. To disable the extension make click on the **extension icon** and click to the **disable button**.
+4. To translate text, simple select the text and click on the button that will appear with a translator icon.
+5. To cancel or close the translated text, simple click anywhere on the screen.
+
 ## License
 This project is under the **MIT LICENSE**
 You are free to use, modify, and distribute this software, provided that the original copyright notice and permission notice are included in all copies or substantial portions of the software.
