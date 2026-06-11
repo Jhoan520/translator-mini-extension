@@ -23,7 +23,6 @@ async function closeExtension() {
 }
 
 async function handleExtensionStatus(event) {
-
     const extension = await chrome.storage.session.get([EXTENSION_STATUS]);
     const extensionStatus = extension[EXTENSION_STATUS] || null;
 

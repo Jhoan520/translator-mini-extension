@@ -7,25 +7,60 @@ const p_text_original = document.createElement("p");
 const p_text_traduction = document.createElement("p");
 const btn_copy = document.createElement("button");
 const img_copy = document.createElement("img");
-
+const img_btn_translate = document.createElement("img");
+const btn_run_translate = document.createElement("button");
 const EXTENSION_STATUS = "extension_is_enable";
 
 initApp();
 async function initApp() {
     await loadDOMElements();
-    window.addEventListener("mouseup", (event) => runTranslation(event));
+    window.addEventListener("mouseup", (event) => openBtnTranslation(event));
+    window.addEventListener("click", (event) => closeBtnTranslation(event));
+    window.addEventListener("click", (event) => closeExtension(event));
+    btn_run_translate.addEventListener("click", (event) => runTranslation(event));
     btn_copy.addEventListener("click", (event) => copyToClipboard(event));
     chrome.runtime.onMessage.addListener((event) => closeExtension(event));
 }
 
+function closeBtnTranslation(event) {
+    const textSelected = document.getSelection().toString().trim();
+
+    if (textSelected.length > 0) return;
+
+    if (!event.target.closest("#btn-translate")) {
+        btn_run_translate.style.display = "none";
+    }
+}
+
+function openBtnTranslation(event) {
+    
+    if (event.target.closest(".btn-translate")) return;
+
+    if (event.target.closest(".container-translator")) return;
+
+    const textSelected = document.getSelection().toString().trim();
+
+    if (textSelected.length === 0) return;
+    // current mouseUp coordinates
+    const coordX = event.pageX;
+    const coordY = event.pageY - 50;
+
+    btn_run_translate.style.top = `${coordY}px`;
+    btn_run_translate.style.left = `${coordX}px`;
+    btn_run_translate.style.display = "block"
+
+    document.body.appendChild(btn_run_translate);
+}
+
 function closeExtension(event) {
- if (event.message === "CLOSE_EXTENSION") {
+ if (!event.target.closest("#container-translator")) {
         div_extension.style.display = "none";
     }
 }
 
 async function copyToClipboard(event) {
     const textCopy = p_text_traduction.textContent;
+
     if(textCopy.length === 0) return;
 
     const clipboardItemData = {"text/plain": textCopy};
@@ -45,12 +80,16 @@ async function runTranslation(event) {
     if (!(await extensionIsEnable())) return;
 
     const textSelected = document.getSelection().toString().trim();
+    
+    btn_run_translate.style.display = "none";
 
-    if (textSelected.length > 0){
+    if (textSelected.length > 0) {
         const traductionObject = {textSelected: textSelected, status: "RUN_TRANSLATION"};
         
         chrome.runtime.sendMessage(traductionObject, (response) => {
-            showTraduction(textSelected, response);
+            console.log(response);
+            
+            showTranslation(textSelected, response);
         });
 
     } else if (!event.target.closest(".div-options .div-original, .div-translation, .container-translator")) {
@@ -58,13 +97,14 @@ async function runTranslation(event) {
     }
 };
 
-function showTraduction(textOriginal, textTraduction) {
+function showTranslation(textOriginal, textTraduction) {
     p_text_original.innerText = textOriginal;
     p_text_traduction.innerText = textTraduction;
     div_extension.style.display = "block";
 };
 
 async function loadDOMElements(){
+    const translateIconURL = chrome.runtime.getURL("images/translate-icon.svg");
     const copyIconURL = chrome.runtime.getURL("images/copy-icon.svg");
     const urlCSS = chrome.runtime.getURL("css/translator-ext.css");
     const resp = await fetch(urlCSS);
@@ -72,6 +112,7 @@ async function loadDOMElements(){
 
     style_ext.innerText = css;
     document.head.appendChild(style_ext);
+    div_extension.id = "container-translator";
     div_extension.classList.add("container-translator");
     div_original.classList.add("div-original");
     div_traduction.classList.add("div-translation");
@@ -85,6 +126,15 @@ async function loadDOMElements(){
     div_options.append(btn_copy);
     div_extension.append(div_original,div_options, div_traduction);
     div_extension.style.display = "none";
-
+    
     document.body.appendChild(div_extension);
+    
+    // btn run translation
+    img_btn_translate.src = translateIconURL;
+    img_btn_translate.alt = "Translate icon";
+    // btn_run_translate.innerText = "Traducir";
+    btn_run_translate.classList.add("btn-translate");
+    btn_run_translate.style.display = "none";
+    btn_run_translate.id = "btn-translate";
+    btn_run_translate.appendChild(img_btn_translate);
 };

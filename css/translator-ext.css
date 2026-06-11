@@ -78,3 +78,19 @@
     display: flex;
     margin: 1%;
 }
+
+.btn-translate {
+    position: absolute;
+    display: none;
+    z-index: 9999;
+    background-color: #0d6efd;
+    border: solid 0.1rem whitesmoke;
+    border-radius: 0.2rem;
+}
+.btn-translate:hover {
+    border: solid 0.2rem #0d6efd;;
+}
+.btn-translate img {
+    width: 1.5rem;
+    height: 1.5rem;
+}
